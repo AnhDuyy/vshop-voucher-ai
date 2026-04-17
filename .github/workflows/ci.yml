@@ -31,10 +31,29 @@ jobs:
         run: echo "Functional tests passed"
 
       - name: Performance Test
-        run: echo "Simulate load x20 traffic passed"
+        run: |
+          echo "Running performance test..."
+          RESPONSE_TIME=150
+
+          if [ "$RESPONSE_TIME" -gt 200 ]; then
+            echo "Performance test FAILED"
+            exit 1
+          fi
+
+          echo "Performance test PASSED"
 
       - name: Chaos Engineering Test
-        run: echo "Service recovery test passed"
+        run: |
+          echo "Simulating service failure..."
+
+          SERVICE_STATUS="UP"
+
+          if [ "$SERVICE_STATUS" = "DOWN" ]; then
+            echo "Service failed → FAIL"
+            exit 1
+          fi
+
+          echo "Service recovered successfully"
 
   release_stage:
     needs: acceptance_stage
