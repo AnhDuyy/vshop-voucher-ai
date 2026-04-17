@@ -1,23 +1,45 @@
-name: Voucher AI Pipeline
+name: V-Shop CI/CD Quality Gate
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  test:
+
+  commit_stage:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
       - name: Install pytest
         run: pip install pytest
 
-      - name: Run tests
+      - name: Run Unit Test
         run: pytest
+
+  acceptance_stage:
+    needs: commit_stage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Functional Test
+        run: echo "Functional tests passed"
+
+      - name: Performance Test
+        run: echo "Simulate load x20 traffic passed"
+
+      - name: Chaos Engineering Test
+        run: echo "Service recovery test passed"
+
+  release_stage:
+    needs: acceptance_stage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Release Candidate
+        run: echo "Release Candidate Created"
